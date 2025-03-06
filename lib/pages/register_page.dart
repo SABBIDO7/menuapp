@@ -1,61 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:menuapp/components/my_button.dart';
 import 'package:menuapp/components/my_textfield.dart';
-import 'package:menuapp/pages/admin/admin_page.dart';
-import 'package:menuapp/pages/home_page.dart';
-import 'package:menuapp/services/auth/auth_service.dart';
 
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   final void Function()? onTap;
-  const LoginPage({super.key, required this.onTap});
+  const RegisterPage({super.key, required this.onTap});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
+  final TextEditingController restaurantNameController =
+      TextEditingController();
   final TextEditingController usernameController = TextEditingController();
 
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController restaurantNameController =
+  final TextEditingController confirmPasswordController =
       TextEditingController();
-  String errorMessage = '';
-  void login() async {
-    // Get input values
-    String username = usernameController.text;
-    String password = passwordController.text;
-    String restaurantName = restaurantNameController.text;
-
-    // Validate input fields
-    if (username.isEmpty || password.isEmpty || restaurantName.isEmpty) {
-      setState(() {
-        errorMessage = 'Please fill in all fields';
-      });
-      return;
-    }
-
-    try {
-      // Call your login service to authenticate the user
-      var user = await AuthService().logIn(username, password, restaurantName);
-
-      // If login is successful, navigate to the home page
-      if (user['role'] == "user") {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
-        );
-      } else if (user['role'] == "admin") {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const AdminPage()),
-        );
-      }
-    } catch (e) {
-      setState(() {
-        errorMessage = 'Incorrect username, password, or restaurant name';
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 25),
             Text(
-              "Food Order App",
+              "Register as a User",
               style: TextStyle(
                 fontSize: 16,
                 color: Theme.of(context).colorScheme.inversePrimary,
@@ -97,25 +59,22 @@ class _LoginPageState extends State<LoginPage> {
               hintText: "Password",
               obscureText: true,
             ),
-            const SizedBox(height: 25),
-            if (errorMessage.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  errorMessage,
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            MyButton(onTap: login, text: "Log In"),
             const SizedBox(height: 10),
+
+            MyTextfield(
+              controller: passwordController,
+              hintText: "Confirm password",
+              obscureText: true,
+            ),
+            const SizedBox(height: 25),
+
+            MyButton(onTap: () {}, text: "Register"),
+            const SizedBox(height: 25),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Not a Member?",
+                  "Already have an account?",
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.inversePrimary,
                   ),
@@ -124,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
                 GestureDetector(
                   onTap: widget.onTap,
                   child: Text(
-                    "Register Now",
+                    "Login now",
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.inversePrimary,
                       fontWeight: FontWeight.bold,
