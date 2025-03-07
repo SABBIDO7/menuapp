@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:menuapp/components/my_drawer.dart';
 import 'package:menuapp/components/my_drawer_tile.dart';
+import 'package:menuapp/pages/admin/create_user.dart';
 
 class AdminPage extends StatelessWidget {
   const AdminPage({super.key});
@@ -18,7 +19,11 @@ class AdminPage extends StatelessWidget {
           MyDrawerTile(
             text: "Create User",
             icon: Icons.create_new_folder,
-            onTap: () {},
+            onTap:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CreateUser()),
+                ),
           ),
           Divider(color: Theme.of(context).colorScheme.secondary),
           MyDrawerTile(

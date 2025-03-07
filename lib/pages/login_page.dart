@@ -6,8 +6,8 @@ import 'package:menuapp/pages/home_page.dart';
 import 'package:menuapp/services/auth/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
-  final void Function()? onTap;
-  const LoginPage({super.key, required this.onTap});
+  //final void Function()? onTap;
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -111,28 +111,28 @@ class _LoginPageState extends State<LoginPage> {
               ),
             MyButton(onTap: login, text: "Log In"),
             const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Not a Member?",
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.inversePrimary,
-                  ),
-                ),
-                SizedBox(width: 4),
-                GestureDetector(
-                  onTap: widget.onTap,
-                  child: Text(
-                    "Register Now",
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.inversePrimary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     Text(
+            //       "Not a Member?",
+            //       style: TextStyle(
+            //         color: Theme.of(context).colorScheme.inversePrimary,
+            //       ),
+            //     ),
+            //     SizedBox(width: 4),
+            //     GestureDetector(
+            //       onTap: widget.onTap,
+            //       child: Text(
+            //         "Register Now",
+            //         style: TextStyle(
+            //           color: Theme.of(context).colorScheme.inversePrimary,
+            //           fontWeight: FontWeight.bold,
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
           ],
         ),
       ),
