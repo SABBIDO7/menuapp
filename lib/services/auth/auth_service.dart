@@ -125,4 +125,45 @@ class AuthService {
     }
     print("User signed out successfully.");
   }
+
+  Future<String> createCategory(
+    String categoryName,
+    String restaurantName,
+  ) async {
+    try {
+      // Check if category is already taken
+      QuerySnapshot querySnapshot =
+          await _firestore
+              .collection('Restaurants')
+              .doc(restaurantName)
+              .collection("categories")
+              .where('name', isEqualTo: categoryName)
+              .limit(1)
+              .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        return "Category already exists. Choose another one.";
+      }
+
+      // Generate a unique category ID (since we're not using Firebase Auth)
+      String categoryId =
+          _firestore
+              .collection('Restaurants')
+              .doc(restaurantName)
+              .collection("categories")
+              .doc()
+              .id;
+
+      // Save category data to Firestore
+      await _firestore
+          .collection('Restaurants')
+          .doc(restaurantName)
+          .collection("categories")
+          .doc(categoryId)
+          .set({'name': categoryName});
+      return "Success";
+    } catch (e) {
+      return "Creation failed: $e";
+    }
+  }
 }

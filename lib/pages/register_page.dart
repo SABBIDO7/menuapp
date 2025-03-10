@@ -36,7 +36,7 @@ class _RegisterPageState extends State<RegisterPage> {
     String password = passwordController.text;
     Map<String, String> info = await userRole();
     String restaurantName = info["restaurantName"] as String;
-    String role = info["role"] as String;
+    //String role = info["role"] as String;
 
     // Validate input fields
     if (username.isEmpty || password.isEmpty) {
@@ -52,7 +52,7 @@ class _RegisterPageState extends State<RegisterPage> {
         username,
         password,
         restaurantName,
-        role,
+        "user",
       );
 
       // If login is successful, navigate to the home page
@@ -117,7 +117,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             const SizedBox(height: 25),
 
-            MyButton(onTap: () {}, text: "Register"),
+            MyButton(onTap: register, text: "Register"),
             const SizedBox(height: 25),
             if (errorMessage.isNotEmpty)
               Padding(
