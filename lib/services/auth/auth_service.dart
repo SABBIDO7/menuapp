@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:menuapp/services/auth/login_or_register.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart'; // For image picking
+import 'package:firebase_storage/firebase_storage.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -164,6 +168,89 @@ class AuthService {
       return "Success";
     } catch (e) {
       return "Creation failed: $e";
+    }
+  }
+
+  Future<String> createItem(
+    String itemName,
+    String description,
+    double price,
+    List<Map<String, dynamic>> availableAddons,
+    String categoryName,
+    String restaurantName,
+    XFile? imageFile,
+  ) async {
+    try {
+      // Check if category is already taken
+      QuerySnapshot querySnapshot =
+          await _firestore
+              .collection('Restaurants')
+              .doc(restaurantName)
+              .collection("Food")
+              .where('name', isEqualTo: itemName)
+              .limit(1)
+              .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        return "Item already exists. Choose another one.";
+      }
+
+      // Generate a unique item ID (since we're not using Firebase Auth)
+      String itemId =
+          _firestore
+              .collection('Restaurants')
+              .doc(restaurantName)
+              .collection("Food")
+              .doc()
+              .id;
+      String imagePath = ''; // Initialize imagePath
+
+      // 3. Upload image to Firebase Storage if provided
+      if (imageFile != null) {
+        File file = File(imageFile.path);
+        String fileName = file.path.split('/').last;
+
+        Reference storageRef = FirebaseStorage.instance.ref().child(
+          '$restaurantName/$fileName',
+        ); // Use restaurant name
+
+        await storageRef.putFile(file);
+        imagePath = await storageRef.getDownloadURL();
+      }
+      // Save item data to Firestore
+      await _firestore
+          .collection('Restaurants')
+          .doc(restaurantName)
+          .collection("Food")
+          .doc(itemId)
+          .set({
+            'name': itemName,
+            'category': categoryName,
+            'description': categoryName,
+            'price': price,
+            'availableAddon': availableAddons,
+            'imagePath': imagePath,
+          });
+      return "Success";
+    } catch (e) {
+      return "Creation failed: $e";
+    }
+  }
+
+  Future<List<String>> getCategories(String restaurantName) async {
+    // Add restaurantName parameter
+    try {
+      QuerySnapshot snapshot =
+          await FirebaseFirestore.instance
+              .collection('Restaurants')
+              .doc(restaurantName) // Use the restaurantName
+              .collection('categories')
+              .get();
+
+      return snapshot.docs.map((doc) => doc['name'] as String).toList();
+    } catch (e) {
+      print("Error fetching categories: $e");
+      return []; // Return an empty list in case of an error
     }
   }
 }

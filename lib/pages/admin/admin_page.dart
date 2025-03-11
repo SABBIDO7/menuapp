@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:menuapp/components/my_drawer.dart';
 import 'package:menuapp/components/my_drawer_tile.dart';
 import 'package:menuapp/pages/admin/createCategories_page.dart';
+import 'package:menuapp/pages/admin/createItem_page.dart';
 import 'package:menuapp/pages/admin/create_user.dart';
 
 class AdminPage extends StatelessWidget {
@@ -29,8 +30,12 @@ class AdminPage extends StatelessWidget {
           Divider(color: Theme.of(context).colorScheme.secondary),
           MyDrawerTile(
             text: "Add Item",
-            icon: Icons.menu_book_rounded,
-            onTap: () {},
+            icon: Icons.food_bank,
+            onTap:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CreateitemPage()),
+                ),
           ),
           Divider(color: Theme.of(context).colorScheme.secondary),
 
