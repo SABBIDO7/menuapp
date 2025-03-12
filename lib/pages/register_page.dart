@@ -78,81 +78,83 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.lock_open_rounded,
-              size: 80,
-              color: Theme.of(context).colorScheme.inversePrimary,
-            ),
-            const SizedBox(height: 25),
-            Text(
-              "Create a User",
-              style: TextStyle(
-                fontSize: 16,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.lock_open_rounded,
+                size: 80,
                 color: Theme.of(context).colorScheme.inversePrimary,
               ),
-            ),
-            const SizedBox(height: 25),
-
-            MyTextfield(
-              controller: usernameController,
-              hintText: "Username",
-              obscureText: false,
-            ),
-            const SizedBox(height: 10),
-
-            MyTextfield(
-              controller: passwordController,
-              hintText: "Password",
-              obscureText: true,
-            ),
-            const SizedBox(height: 10),
-
-            MyTextfield(
-              controller: confirmPasswordController,
-              hintText: "Confirm password",
-              obscureText: true,
-            ),
-            const SizedBox(height: 25),
-
-            MyButton(onTap: register, text: "Register"),
-            const SizedBox(height: 25),
-            if (errorMessage.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  errorMessage,
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                  ),
+              const SizedBox(height: 25),
+              Text(
+                "Create a User",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Theme.of(context).colorScheme.inversePrimary,
                 ),
               ),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: [
-            //     Text(
-            //       "Already have an account?",
-            //       style: TextStyle(
-            //         color: Theme.of(context).colorScheme.inversePrimary,
-            //       ),
-            //     ),
-            //     SizedBox(width: 4),
-            //     GestureDetector(
-            //       onTap: widget.onTap,
-            //       child: Text(
-            //         "Login now",
-            //         style: TextStyle(
-            //           color: Theme.of(context).colorScheme.inversePrimary,
-            //           fontWeight: FontWeight.bold,
-            //         ),
-            //       ),
-            //     ),
-            //   ],
-            // ),
-          ],
+              const SizedBox(height: 25),
+          
+              MyTextfield(
+                controller: usernameController,
+                hintText: "Username",
+                obscureText: false,
+              ),
+              const SizedBox(height: 10),
+          
+              MyTextfield(
+                controller: passwordController,
+                hintText: "Password",
+                obscureText: true,
+              ),
+              const SizedBox(height: 10),
+          
+              MyTextfield(
+                controller: confirmPasswordController,
+                hintText: "Confirm password",
+                obscureText: true,
+              ),
+              const SizedBox(height: 25),
+          
+              MyButton(onTap: register, text: "Register"),
+              const SizedBox(height: 25),
+              if (errorMessage.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    errorMessage,
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     Text(
+              //       "Already have an account?",
+              //       style: TextStyle(
+              //         color: Theme.of(context).colorScheme.inversePrimary,
+              //       ),
+              //     ),
+              //     SizedBox(width: 4),
+              //     GestureDetector(
+              //       onTap: widget.onTap,
+              //       child: Text(
+              //         "Login now",
+              //         style: TextStyle(
+              //           color: Theme.of(context).colorScheme.inversePrimary,
+              //           fontWeight: FontWeight.bold,
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // ),
+            ],
+          ),
         ),
       ),
     );

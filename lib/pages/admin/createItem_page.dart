@@ -36,7 +36,16 @@ class _CreateitemPageState extends State<CreateitemPage> {
   @override
   void initState() {
     super.initState();
-    _fetchCategories(); // Fetch categories when the widget initializes
+    _fetchCategories().then((_) {
+      // After fetching restaurants
+      if (categories.isNotEmpty) {
+        setState(() {
+          selectedCategory = categories[0]; // Set initial selected value
+          categoryNameController.text =
+              selectedCategory ?? ''; // Set the initial value of the controller
+        });
+      }
+    }); // Fetch categories when the widget initializes
   }
 
   Future<void> _fetchCategories() async {

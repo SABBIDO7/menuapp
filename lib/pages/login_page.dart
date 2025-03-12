@@ -3,6 +3,7 @@ import 'package:menuapp/components/my_button.dart';
 import 'package:menuapp/components/my_textfield.dart';
 import 'package:menuapp/pages/admin/admin_page.dart';
 import 'package:menuapp/pages/home_page.dart';
+import 'package:menuapp/pages/superAdmin/superAdmin_page.dart';
 import 'package:menuapp/services/auth/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
@@ -48,6 +49,11 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const AdminPage()),
+        );
+      } else if (user['role'] == "superAdmin") {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const SuperadminPage()),
         );
       }
     } catch (e) {

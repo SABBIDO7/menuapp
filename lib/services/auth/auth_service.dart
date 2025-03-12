@@ -297,4 +297,70 @@ class AuthService {
       return "Failed to create/edit profile: $e";
     }
   }
+
+  Future<List<String>> getRestaurants() async {
+    try {
+      QuerySnapshot snapshot =
+          await FirebaseFirestore.instance.collection('Restaurants').get();
+
+      return snapshot.docs.map((doc) => doc.id).toList(); //Use Doc IDs
+    } catch (e) {
+      print("Error fetching restaurant names: $e");
+      return [];
+    }
+  }
+
+  Future<String> createRestaurant(String restaurantName) async {
+    try {
+      // 1. Check if restaurant name already exists
+      DocumentSnapshot restaurantDoc =
+          await FirebaseFirestore.instance
+              .collection('Restaurants')
+              .doc(restaurantName)
+              .get();
+
+      if (restaurantDoc.exists) {
+        return "Restaurant name already exists.";
+      }
+
+      // 2. Create restaurant document in Firestore
+      await FirebaseFirestore.instance
+          .collection('Restaurants')
+          .doc(restaurantName)
+          .set({}); // Empty document initially
+
+      // // 3. Create subcollections
+      // await FirebaseFirestore.instance
+      //     .collection('Restaurants')
+      //     .doc(restaurantName)
+      //     .collection('Food')
+      //     .add({}); //Add an empty document to ensure creation
+
+      // await FirebaseFirestore.instance
+      //     .collection('Restaurants')
+      //     .doc(restaurantName)
+      //     .collection('categories')
+      //     .add({});
+
+      await FirebaseFirestore.instance
+          .collection('Restaurants')
+          .doc(restaurantName)
+          .collection('profile')
+          .add({"name": "", "phoneNumber": ""});
+
+      // // 4. Create folder in Firebase Storage
+      // Reference storageRef = FirebaseStorage.instance.ref().child(
+      //   restaurantName,
+      // );
+      // await storageRef.putString(
+      //   "",
+      //   metadata: SettableMetadata(contentType: 'text/plain'),
+      // ); // Create an empty folder in storage.
+
+      return "Success";
+    } catch (e) {
+      print("Error creating restaurant: $e");
+      return "Error creating restaurant: $e";
+    }
+  }
 }

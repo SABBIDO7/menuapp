@@ -3,6 +3,7 @@ import 'package:menuapp/components/my_drawer_tile.dart';
 import 'package:menuapp/pages/admin/admin_page.dart';
 import 'package:menuapp/pages/home_page.dart';
 import 'package:menuapp/pages/settings_page.dart';
+import 'package:menuapp/pages/superAdmin/superAdmin_page.dart';
 import 'package:menuapp/services/auth/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -54,7 +55,9 @@ class MyDrawer extends StatelessWidget {
                               (context) =>
                                   userRole == "user"
                                       ? const HomePage()
-                                      : const AdminPage(),
+                                      : userRole == "admin"
+                                      ? const AdminPage()
+                                      : const SuperadminPage(),
                         ),
                         (route) => false,
                       ),
