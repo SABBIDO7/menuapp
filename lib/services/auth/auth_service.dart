@@ -253,4 +253,48 @@ class AuthService {
       return []; // Return an empty list in case of an error
     }
   }
+
+  Future<String> createOrEditProfile(
+    String phoneNumber,
+    String restaurantNameChoosen,
+
+    String restaurantName,
+  ) async {
+    try {
+      CollectionReference profileCollection = _firestore
+          .collection("Restaurants")
+          .doc(restaurantName)
+          .collection('profile');
+
+      QuerySnapshot snapshot =
+          await profileCollection.get(); // Get all profile docs
+
+      if (snapshot.docs.isNotEmpty) {
+        // Check if a profile doc exists
+        print("pppp");
+        String profileDocId =
+            snapshot.docs[0].id; // Get the ID of the first (and only) document
+        DocumentReference profileRef = profileCollection.doc(profileDocId);
+
+        await profileRef.set({
+          'phoneNumber': phoneNumber,
+          'name': restaurantNameChoosen,
+        });
+      } else {
+        print("pppp22");
+
+        String profileDocId =
+            _firestore.doc(restaurantName).collection('profile').doc().id;
+        DocumentReference profileRef = profileCollection.doc(profileDocId);
+
+        await profileRef.set({
+          'phoneNumber': phoneNumber,
+          'name': restaurantNameChoosen,
+        });
+      }
+      return "Success";
+    } catch (e) {
+      return "Failed to create/edit profile: $e";
+    }
+  }
 }

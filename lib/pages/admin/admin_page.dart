@@ -4,6 +4,7 @@ import 'package:menuapp/components/my_drawer_tile.dart';
 import 'package:menuapp/pages/admin/createCategories_page.dart';
 import 'package:menuapp/pages/admin/createItem_page.dart';
 import 'package:menuapp/pages/admin/create_user.dart';
+import 'package:menuapp/pages/admin/profile_page.dart';
 
 class AdminPage extends StatelessWidget {
   const AdminPage({super.key});
@@ -58,9 +59,13 @@ class AdminPage extends StatelessWidget {
           ),
           Divider(color: Theme.of(context).colorScheme.secondary),
           MyDrawerTile(
-            text: "Edit Profile",
+            text: "Profile",
             icon: Icons.supervised_user_circle_sharp,
-            onTap: () {},
+            onTap:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                ),
           ),
           Divider(color: Theme.of(context).colorScheme.secondary),
         ],
