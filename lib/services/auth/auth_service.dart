@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:menuapp/models/food.dart';
 import 'package:menuapp/services/auth/login_or_register.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart'; // For image picking
@@ -370,5 +371,50 @@ class AuthService {
       print("Error creating restaurant: $e");
       return "Error creating restaurant: $e";
     }
+  }
+
+  Future<List<Food>> getFoods(String restaurantName) async {
+    try {
+      QuerySnapshot snapshot =
+          await _firestore
+              .collection('Restaurants')
+              .doc(restaurantName)
+              .collection('Food')
+              .get();
+
+      List<Food> foods = [];
+      for (var doc in snapshot.docs) {
+        // Convert Firestore data to Food object
+        List<Addon> availableAddon = [];
+        if (doc['availableAddon'] != null) {
+          for (var addon in doc['availableAddon']) {
+            availableAddon.add(
+              Addon(name: addon['name'], price: addon['price']),
+            );
+          }
+        }
+        foods.add(
+          Food(
+            name: doc['name'],
+            description: doc['description'],
+            imagePath: doc['imagePath'],
+            price: doc['price'].toDouble(),
+            category: _getFoodCategory(doc['category']),
+            availableAddon: availableAddon,
+          ),
+        );
+      }
+      return foods;
+    } catch (e) {
+      print('Error getting foods: $e');
+      return [];
+    }
+  }
+
+  // Helper function to convert string to FoodCategory object
+  FoodCategory _getFoodCategory(String categoryString) {
+    return FoodCategory.fromString(
+      categoryString,
+    ); // Create a FoodCategory object
   }
 }

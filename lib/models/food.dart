@@ -4,18 +4,25 @@ class Food {
   final String imagePath;
   final double price;
   final FoodCategory category;
-  List<Addon> availableAddons;
+  List<Addon> availableAddon;
   Food({
     required this.name,
     required this.description,
     required this.imagePath,
     required this.price,
     required this.category,
-    required this.availableAddons,
+    required this.availableAddon,
   });
 }
 
-enum FoodCategory { burgers, salads, sides, desserts, drinks }
+class FoodCategory {
+  String name; 
+  FoodCategory({required this.name});
+   // Factory constructor to create from a string (optional but helpful)
+  factory FoodCategory.fromString(String categoryString) {
+    return FoodCategory(name: categoryString);
+  }
+}
 
 class Addon {
   String name;

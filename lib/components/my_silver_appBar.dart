@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class MySilverAppbar extends StatelessWidget {
   final Widget child;
   final Widget title;
-  const MySilverAppbar({super.key, required this.child, required this.title});
+  final String restaurantName;
+  const MySilverAppbar({super.key, required this.child, required this.title,required this.restaurantName});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class MySilverAppbar extends StatelessWidget {
       actions: [IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart))],
       backgroundColor: Theme.of(context).colorScheme.surface,
       foregroundColor: Theme.of(context).colorScheme.inversePrimary,
-      title: Text("Sunset Dinner"),
+      title: Text(restaurantName),
       flexibleSpace: FlexibleSpaceBar(
         title: title,
         centerTitle: true,

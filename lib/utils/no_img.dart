@@ -1,0 +1,1 @@
+final imgPath = "https://firebasestorage.googleapis.com/v0/b/my-menu-app-007.firebasestorage.app/o/noimg.jpg?alt=media&token=a042aac3-bcfe-4631-92ca-c0deef347e8e";
