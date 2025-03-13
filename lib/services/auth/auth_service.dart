@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +8,7 @@ import 'package:menuapp/services/auth/login_or_register.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart'; // For image picking
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:crypto/crypto.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -39,15 +41,18 @@ class AuthService {
       }
 
       var userDoc = querySnapshot.docs.first;
-      String storedPassword =
+      String storedHashedPassword =
           userDoc['password']; // Ideally, hash this before storing
       String role = userDoc['role'];
       String restaurantName = userDoc['restaurantName'];
 
       // Check if the password matches
-      if (password != storedPassword) {
-        print("password incorrect hereeee");
+      var bytes = utf8.encode(password);
+      var digest = sha256.convert(bytes);
+      String enteredHashedPassword = digest.toString();
 
+      // 3. Check if the hashed passwords match
+      if (enteredHashedPassword != storedHashedPassword) {
         throw Exception("Incorrect password");
       }
 
@@ -92,11 +97,14 @@ class AuthService {
 
       // Generate a unique user ID (since we're not using Firebase Auth)
       String userId = _firestore.collection('users').doc().id;
-
+      // 1. Hash the password using SHA256
+      var bytes = utf8.encode(password); // Encode the password as UTF-8 bytes
+      var digest = sha256.convert(bytes); // Generate the SHA256 hash
+      String hashedPassword = digest.toString();
       // Save user data to Firestore
       await _firestore.collection('users').doc(userId).set({
         'username': username,
-        'password': password, // Store a hashed password in production
+        'password': hashedPassword, // Store a hashed password in production
         'restaurantName': restaurantName,
         'role': role, // 'admin', 'user', or 'superAdmin'
       });
