@@ -235,7 +235,7 @@ class AuthService {
           .set({
             'name': itemName,
             'category': categoryName,
-            'description': categoryName,
+            'description': description,
             'price': price,
             'availableAddon': availableAddons,
             'imagePath': imagePath,
