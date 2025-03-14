@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:menuapp/models/cart_item.dart';
 import 'package:menuapp/models/food.dart';
 class operation extends ChangeNotifier{
+  List<CartItem> get cart => _cart;
   List<CartItem> _cart = [];
   void addToCart(Food food, List<Addon> selectedAddons) {
     CartItem? cartItem = _cart.firstWhereOrNull((item) {
