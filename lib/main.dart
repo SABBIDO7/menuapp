@@ -4,6 +4,7 @@ import 'package:menuapp/pages/home_page.dart';
 import 'package:menuapp/services/auth/login_or_register.dart';
 import 'package:menuapp/firebase_options.dart';
 import 'package:menuapp/themes/theme_provider.dart';
+import 'package:menuapp/utils/operation.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,10 +18,15 @@ void main() async {
     print("Firebase initialization failed: $e");
   }
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => ThemeProvider(),
+    MultiProvider(providers: [
+      ChangeNotifierProvider(
+        create: (context) => ThemeProvider(),
+      ),
+      ChangeNotifierProvider(create: (context) => operation()),
+    ],
       child: const MyApp(),
-    ),
+    )
+
   );
 }
 

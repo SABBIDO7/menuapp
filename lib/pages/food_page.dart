@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:menuapp/components/my_button.dart';
 import 'package:menuapp/models/food.dart';
 import 'package:menuapp/utils/no_img.dart';
+import 'package:menuapp/utils/operation.dart';
+import 'package:provider/provider.dart';
 
 class FoodPage extends StatefulWidget {
   final Food food;
@@ -17,6 +19,17 @@ class FoodPage extends StatefulWidget {
 }
 
 class _FoodPageState extends State<FoodPage> {
+  void addToCart(Food food,Map<Addon,bool> selectedAddons){
+    Navigator.pop(context);
+    List<Addon> currentlySelectedAddons = [];
+    for(Addon addon in widget.food.availableAddon){
+      if(widget.selectedAddons[addon]== true){
+        currentlySelectedAddons.add(addon);
+      }
+    }
+    //add to cart
+    context.read<operation>().addToCart(food,currentlySelectedAddons);
+  }
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -25,9 +38,14 @@ class _FoodPageState extends State<FoodPage> {
           body: SingleChildScrollView(
             child: Column(
               children: [
-                Image.network(
+    SizedBox(
+      width: double.infinity,
+                child:Image.network(
                   widget.food.imagePath != "" ? widget.food.imagePath : imgPath,
+                  height:350,
+                  fit: BoxFit.cover,
                 ),
+    ),
                 Padding(
                   padding: const EdgeInsets.all(25),
                   child: Column(
@@ -98,7 +116,7 @@ class _FoodPageState extends State<FoodPage> {
                     ],
                   ),
                 ),
-                MyButton(onTap: () {}, text: 'Add to Cart'),
+                MyButton(onTap: () =>addToCart(widget.food,widget.selectedAddons), text: 'Add to Cart'),
                 const SizedBox(height: 25),
               ],
             ),
