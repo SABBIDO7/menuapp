@@ -15,7 +15,7 @@ class CartPage extends StatelessWidget {
     return prefs.getString('phoneNumber') ?? "";
   }
 
-  void sendOrderToWhatsApp(List<CartItem> cart) async {
+  void sendOrderToWhatsApp(List<CartItem> cart, operation restaurant) async {
     if (cart.isEmpty) return;
 
     StringBuffer message = StringBuffer();
@@ -56,6 +56,7 @@ class CartPage extends StatelessWidget {
     Uri uri = Uri.parse(whatsappUrl);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
+      restaurant.clearCart();
     } else {
       debugPrint("Could not open WhatsApp.");
     }
@@ -121,7 +122,7 @@ class CartPage extends StatelessWidget {
                 ),
               ),
               MyButton(
-                onTap: () => sendOrderToWhatsApp(userCart),
+                onTap: () => sendOrderToWhatsApp(userCart, resturant),
                 text: "Make Order",
               ),
               SizedBox(height: 25),
