@@ -1,7 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MyDescriptionBox extends StatelessWidget {
   const MyDescriptionBox({super.key});
+  Future<String> getPhoneNumber() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('phoneNumber') ?? "";
+  }
+
+  void support() async {
+    String message = "Hello, ";
+    String phoneNumber =
+        await getPhoneNumber(); // Replace with the restaurant's WhatsApp number
+    String whatsappUrl =
+        "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message.toString())}";
+
+    Uri uri = Uri.parse(whatsappUrl);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      debugPrint("Could not open WhatsApp.");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +50,7 @@ class MyDescriptionBox extends StatelessWidget {
                   Icons.phone,
                   color: Theme.of(context).colorScheme.primary,
                 ),
-                onTap: () {},
+                onTap: support,
               ),
             ],
           ),

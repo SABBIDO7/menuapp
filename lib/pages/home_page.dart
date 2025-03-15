@@ -109,6 +109,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         mainAxisAlignment: MainAxisAlignment.end,
 
                         children: [
+                          Container(
+                            padding: const EdgeInsets.all(25),
+                            margin: const EdgeInsets.only(left: 25, right: 25),
+                            child: Text(
+                              "Our Restaurant Is One of the Best That Makes The Special Burger.",
+                              style: TextStyle(
+                                color:
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.inversePrimary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+
                           Divider(
                             indent: 25,
                             endIndent: 25,
