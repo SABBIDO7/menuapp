@@ -16,8 +16,19 @@ class MyTabbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: TabBar(controller: tabController, tabs: _buildCategoriesTab()),
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+
+      child: Container(
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width,
+        ),
+        child: TabBar(
+          controller: tabController,
+          isScrollable: true,
+          tabs: _buildCategoriesTab(),
+        ),
+      ),
     );
   }
 }

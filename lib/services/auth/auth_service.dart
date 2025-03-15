@@ -156,6 +156,7 @@ class AuthService {
       await prefs.remove('username');
       await prefs.remove('role');
       await prefs.remove('restaurantName');
+      await prefs.remove('phoneNumber');
 
       // Navigate to Login Screen after logout
       Navigator.pushAndRemoveUntil(
