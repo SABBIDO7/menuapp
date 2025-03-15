@@ -15,11 +15,17 @@ class CartPage extends StatelessWidget {
     return prefs.getString('phoneNumber') ?? "";
   }
 
+  Future<String> getUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('username') ?? "";
+  }
+
   void sendOrderToWhatsApp(List<CartItem> cart, operation restaurant) async {
     if (cart.isEmpty) return;
 
     StringBuffer message = StringBuffer();
-    message.writeln("🛒 *Order Details:*");
+    String username = await getUser();
+    message.writeln("🛒 *Order Details:* for $username");
     message.writeln("-----------------------------------");
 
     double totalAmount = 0;
