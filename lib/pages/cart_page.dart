@@ -3,9 +3,61 @@ import 'package:menuapp/components/my_button.dart';
 import 'package:menuapp/components/my_cart_tile.dart';
 import 'package:menuapp/utils/operation.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../models/cart_item.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
+  Future<String> getPhoneNumber() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('phoneNumber') ?? "";
+  }
+
+  void sendOrderToWhatsApp(List<CartItem> cart) async {
+    if (cart.isEmpty) return;
+
+    StringBuffer message = StringBuffer();
+    message.writeln("🛒 *Order Details:*");
+    message.writeln("-----------------------------------");
+
+    double totalAmount = 0;
+
+    for (var item in cart) {
+      message.writeln("🍽️ *${item.food.name}*");
+      message.writeln("   - Quantity: ${item.quantity}");
+      message.writeln("   - Price: \$${item.food.price.toStringAsFixed(2)}");
+
+      if (item.selectedAddons.isNotEmpty) {
+        message.writeln("   - Addons:");
+        for (var addon in item.selectedAddons) {
+          message.writeln(
+            "     ✅ ${addon.name} (\$${addon.price.toStringAsFixed(2)})",
+          );
+        }
+      }
+
+      double itemTotal = item.totalPrice;
+      totalAmount += itemTotal;
+      message.writeln("   - *Total: \$${itemTotal.toStringAsFixed(2)}*");
+      message.writeln("-----------------------------------");
+    }
+
+    message.writeln("*Grand Total: \$${totalAmount.toStringAsFixed(2)}*");
+
+    String phoneNumber =
+        await getPhoneNumber(); // Replace with the restaurant's WhatsApp number
+    String whatsappUrl =
+        "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message.toString())}";
+
+    Uri uri = Uri.parse(whatsappUrl);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      debugPrint("Could not open WhatsApp.");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +118,10 @@ class CartPage extends StatelessWidget {
                   ],
                 ),
               ),
-              MyButton(onTap: () {}, text: "Make Order"),
+              MyButton(
+                onTap: () => sendOrderToWhatsApp(userCart),
+                text: "Make Order",
+              ),
               SizedBox(height: 25),
             ],
           ),

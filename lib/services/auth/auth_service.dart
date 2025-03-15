@@ -57,16 +57,44 @@ class AuthService {
         throw Exception("Incorrect password");
       }
 
+      String phoneNumber = "";
+
+      CollectionReference profileCollection = _firestore
+          .collection("Restaurants")
+          .doc(restaurantName)
+          .collection('profile');
+
+      QuerySnapshot snapshot =
+          await profileCollection.get(); // Get all profile docs
+
+      if (snapshot.docs.isNotEmpty) {
+        // Check if a profile doc exists
+        print("pppp");
+        String profileDocId = snapshot.docs[0].id;
+        // Fetch the phoneNumber from the "profile" collection using the userId
+        DocumentSnapshot profileDoc =
+            await FirebaseFirestore.instance
+                .collection('profile')
+                .doc(profileDocId)
+                .get();
+
+        if (profileDoc.exists) {
+          phoneNumber = profileDoc['phoneNumber'] ?? "";
+        }
+      }
+
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLoggedIn', true);
       await prefs.setString('username', username);
       await prefs.setString('role', role);
       await prefs.setString('restaurantName', restaurantName);
+      await prefs.setString('phoneNumber', phoneNumber);
 
       return {
         'username': username,
         'role': role,
         'restaurantName': restaurantName,
+        'phoneNumber': phoneNumber,
       };
     } catch (e) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
