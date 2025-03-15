@@ -48,6 +48,8 @@ class CartPage extends StatelessWidget {
 
     String phoneNumber =
         await getPhoneNumber(); // Replace with the restaurant's WhatsApp number
+    print("here");
+    print(phoneNumber);
     String whatsappUrl =
         "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message.toString())}";
 

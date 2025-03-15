@@ -74,6 +74,8 @@ class AuthService {
         // Fetch the phoneNumber from the "profile" collection using the userId
         DocumentSnapshot profileDoc =
             await FirebaseFirestore.instance
+                .collection("Restaurants")
+                .doc(restaurantName)
                 .collection('profile')
                 .doc(profileDocId)
                 .get();
@@ -82,6 +84,8 @@ class AuthService {
           phoneNumber = profileDoc['phoneNumber'] ?? "";
         }
       }
+      print("here2");
+      print(phoneNumber);
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLoggedIn', true);
