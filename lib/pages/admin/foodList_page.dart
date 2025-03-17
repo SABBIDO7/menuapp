@@ -253,7 +253,8 @@ class _FoodListPageState extends State<FoodListPage> {
             _navigateToEditPage(food.name);
           },
         ),
-        // Edit button overlay
+
+        // Action buttons overlay
         Positioned(
           top: 10,
           right: 10,
@@ -275,27 +276,23 @@ class _FoodListPageState extends State<FoodListPage> {
                 ),
               ),
 
-              // Edit button overlay
-              Positioned(
-                top: 10,
-                right: 10,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.primaryContainer.withOpacity(0.7),
-                    borderRadius: BorderRadius.circular(20),
+              // Edit button
+              Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primaryContainer.withOpacity(0.7),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: IconButton(
+                  icon: Icon(
+                    Icons.edit,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
                   ),
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.edit,
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    ),
-                    onPressed: () {
-                      _navigateToEditPage(food.name);
-                    },
-                    tooltip: 'Edit item',
-                  ),
+                  onPressed: () {
+                    _navigateToEditPage(food.name);
+                  },
+                  tooltip: 'Edit item',
                 ),
               ),
             ],
@@ -316,9 +313,12 @@ class _FoodListPageState extends State<FoodListPage> {
   }
 
   void _showDeleteConfirmation(Food food) {
+    // Store the context reference before the async operation
+    final BuildContext currentContext = context;
+
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
+      context: currentContext,
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: Text('Delete ${food.name}?'),
           content: Text('This action cannot be undone.'),
@@ -326,57 +326,73 @@ class _FoodListPageState extends State<FoodListPage> {
             TextButton(
               child: Text('Cancel'),
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(dialogContext).pop(); // Use dialogContext
               },
             ),
             TextButton(
               child: Text('Delete', style: TextStyle(color: Colors.red)),
-              onPressed: () async {
-                Navigator.of(context).pop(); // Close the dialog
+              onPressed: () {
+                // Close the confirmation dialog
+                Navigator.of(dialogContext).pop();
 
-                // Show loading indicator
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (BuildContext context) {
-                    return Center(child: CircularProgressIndicator());
-                  },
-                );
-
-                // Get restaurant name
-                String restaurantName = await getRestaurantName();
-
-                // Call delete function from AuthService
-                String result = await AuthService().deleteItem(
-                  food.name,
-                  restaurantName,
-                );
-
-                // Close loading dialog
-                Navigator.of(context).pop();
-
-                // Show result message
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      result == "Success"
-                          ? "Item deleted successfully"
-                          : "Error: $result",
-                    ),
-                    backgroundColor:
-                        result == "Success" ? Colors.green : Colors.red,
-                  ),
-                );
-
-                // Refresh the list if deletion was successful
-                if (result == "Success") {
-                  _loadData();
-                }
+                // Execute the delete operation using the stored context
+                _deleteFood(food, currentContext);
               },
             ),
           ],
         );
       },
     );
+  }
+
+  // Separate method to handle the deletion process
+  Future<void> _deleteFood(Food food, BuildContext context) async {
+    // Show loading indicator
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext loaderContext) {
+        return Center(child: CircularProgressIndicator());
+      },
+    );
+
+    try {
+      // Get restaurant name
+      String restaurantName = await getRestaurantName();
+
+      // Call delete function from AuthService
+      String result = await AuthService().deleteItem(food.name, restaurantName);
+
+      // Close loading dialog safely
+      if (Navigator.canPop(context)) {
+        Navigator.of(context).pop();
+      }
+
+      // Show result message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            result == "Success"
+                ? "Item deleted successfully"
+                : "Error: $result",
+          ),
+          backgroundColor: result == "Success" ? Colors.green : Colors.red,
+        ),
+      );
+
+      // Refresh the list if deletion was successful
+      if (result == "Success") {
+        _loadData();
+      }
+    } catch (e) {
+      // Handle any errors
+      if (Navigator.canPop(context)) {
+        Navigator.of(context).pop(); // Close loading dialog
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e"), backgroundColor: Colors.red),
+      );
+    }
   }
 }

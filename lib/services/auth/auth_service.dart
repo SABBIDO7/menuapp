@@ -581,7 +581,7 @@ class AuthService {
       String docId = querySnapshot.docs.first.id;
 
       // Check if there's an image to delete from storage
-      String imagePath = querySnapshot.docs.first['imagePath'] ?? '';
+      //String imagePath = querySnapshot.docs.first['imagePath'] ?? '';
 
       // Delete the document from Firestore
       await _firestore
@@ -592,15 +592,15 @@ class AuthService {
           .delete();
 
       // Delete the image from storage if it exists
-      if (imagePath.isNotEmpty) {
-        try {
-          Reference imageRef = FirebaseStorage.instance.refFromURL(imagePath);
-          await imageRef.delete();
-        } catch (e) {
-          print("Error deleting image: $e");
-          // Continue with deletion even if image deletion fails
-        }
-      }
+      // if (imagePath.isNotEmpty) {
+      //   try {
+      //     Reference imageRef = FirebaseStorage.instance.refFromURL(imagePath);
+      //     await imageRef.delete();
+      //   } catch (e) {
+      //     print("Error deleting image: $e");
+      //     // Continue with deletion even if image deletion fails
+      //   }
+      // }
 
       return "Success";
     } catch (e) {
