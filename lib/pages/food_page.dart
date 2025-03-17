@@ -19,17 +19,18 @@ class FoodPage extends StatefulWidget {
 }
 
 class _FoodPageState extends State<FoodPage> {
-  void addToCart(Food food,Map<Addon,bool> selectedAddons){
+  void addToCart(Food food, Map<Addon, bool> selectedAddons) {
     Navigator.pop(context);
     List<Addon> currentlySelectedAddons = [];
-    for(Addon addon in widget.food.availableAddon){
-      if(widget.selectedAddons[addon]== true){
+    for (Addon addon in widget.food.availableAddon) {
+      if (widget.selectedAddons[addon] == true) {
         currentlySelectedAddons.add(addon);
       }
     }
     //add to cart
-    context.read<operation>().addToCart(food,currentlySelectedAddons);
+    context.read<operation>().addToCart(food, currentlySelectedAddons);
   }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -38,14 +39,16 @@ class _FoodPageState extends State<FoodPage> {
           body: SingleChildScrollView(
             child: Column(
               children: [
-    SizedBox(
-      width: double.infinity,
-                child:Image.network(
-                  widget.food.imagePath != "" ? widget.food.imagePath : imgPath,
-                  height:350,
-                  fit: BoxFit.cover,
+                SizedBox(
+                  width: double.infinity,
+                  child: Image.network(
+                    widget.food.imagePath != ""
+                        ? widget.food.imagePath
+                        : imgPath,
+                    height: 350,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-    ),
                 Padding(
                   padding: const EdgeInsets.all(25),
                   child: Column(
@@ -59,7 +62,7 @@ class _FoodPageState extends State<FoodPage> {
                         ),
                       ),
                       Text(
-                        '\$${widget.food.price}',
+                        '\€${widget.food.price}',
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                           fontSize: 16,
@@ -98,7 +101,7 @@ class _FoodPageState extends State<FoodPage> {
                             return CheckboxListTile(
                               title: Text(addon.name),
                               subtitle: Text(
-                                '\$${addon.price.toString()}',
+                                '\€${addon.price.toString()}',
                                 style: TextStyle(
                                   color: Theme.of(context).colorScheme.primary,
                                 ),
@@ -116,7 +119,10 @@ class _FoodPageState extends State<FoodPage> {
                     ],
                   ),
                 ),
-                MyButton(onTap: () =>addToCart(widget.food,widget.selectedAddons), text: 'Add to Cart'),
+                MyButton(
+                  onTap: () => addToCart(widget.food, widget.selectedAddons),
+                  text: 'Add to Cart',
+                ),
                 const SizedBox(height: 25),
               ],
             ),

@@ -33,24 +33,24 @@ class CartPage extends StatelessWidget {
     for (var item in cart) {
       message.writeln("🍽️ *${item.food.name}*");
       message.writeln("   - Quantity: ${item.quantity}");
-      message.writeln("   - Price: \$${item.food.price.toStringAsFixed(2)}");
+      message.writeln("   - Price: \€${item.food.price.toStringAsFixed(2)}");
 
       if (item.selectedAddons.isNotEmpty) {
         message.writeln("   - Addons:");
         for (var addon in item.selectedAddons) {
           message.writeln(
-            "     ✅ ${addon.name} (\$${addon.price.toStringAsFixed(2)})",
+            "     ✅ ${addon.name} (\€${addon.price.toStringAsFixed(2)})",
           );
         }
       }
 
       double itemTotal = item.totalPrice;
       totalAmount += itemTotal;
-      message.writeln("   - *Total: \$${itemTotal.toStringAsFixed(2)}*");
+      message.writeln("   - *Total: \€${itemTotal.toStringAsFixed(2)}*");
       message.writeln("-----------------------------------");
     }
 
-    message.writeln("*Grand Total: \$${totalAmount.toStringAsFixed(2)}*");
+    message.writeln("*Grand Total: \€${totalAmount.toStringAsFixed(2)}*");
 
     String phoneNumber =
         await getPhoneNumber(); // Replace with the restaurant's WhatsApp number
@@ -129,7 +129,7 @@ class CartPage extends StatelessWidget {
               ),
               MyButton(
                 onTap: () => sendOrderToWhatsApp(userCart, resturant),
-                text: "Make Order (\$${resturant.getTotalPrice()})",
+                text: "Make Order (\€${resturant.getTotalPrice()})",
               ),
               SizedBox(height: 25),
             ],

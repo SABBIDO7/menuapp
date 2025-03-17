@@ -52,7 +52,7 @@ class MyCartTile extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '\$${cartItem.food.price}',
+                            '\€${cartItem.food.price}',
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.primary,
                             ),
@@ -93,7 +93,7 @@ class MyCartTile extends StatelessWidget {
                                     children: [
                                       Text(addon.name),
                                       Text(
-                                        ' (\$${addon.price.toString()})',
+                                        ' (\€${addon.price.toString()})',
                                         style: TextStyle(
                                           color:
                                               Theme.of(

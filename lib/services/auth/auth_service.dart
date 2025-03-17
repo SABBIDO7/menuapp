@@ -450,4 +450,162 @@ class AuthService {
       categoryString,
     ); // Create a FoodCategory object
   }
+
+  Future<String> editItem(
+    String itemId,
+    String itemName,
+    String description,
+    double price,
+    List<Map<String, dynamic>> availableAddons,
+    String categoryName,
+    String restaurantName,
+    XFile? imageFile,
+    String currentImagePath,
+  ) async {
+    try {
+      // Check if the new name is already taken by another item
+      if (itemName != itemName) {
+        // Only check if name has changed
+        QuerySnapshot querySnapshot =
+            await _firestore
+                .collection('Restaurants')
+                .doc(restaurantName)
+                .collection("Food")
+                .where('name', isEqualTo: itemName)
+                .where(
+                  FieldPath.documentId,
+                  isNotEqualTo: itemId,
+                ) // Exclude the current item
+                .limit(1)
+                .get();
+
+        if (querySnapshot.docs.isNotEmpty) {
+          return "Item name already exists. Choose another one.";
+        }
+      }
+
+      String imagePath = currentImagePath; // Start with the current image path
+
+      // Upload new image to Firebase Storage if provided
+      if (imageFile != null) {
+        // Delete the old image if it exists
+        if (currentImagePath.isNotEmpty) {
+          try {
+            // Extract the file path from the URL
+            Reference oldImageRef = FirebaseStorage.instance.refFromURL(
+              currentImagePath,
+            );
+            await oldImageRef.delete();
+          } catch (e) {
+            print("Error deleting old image: $e");
+            // Continue with update even if delete fails
+          }
+        }
+
+        // Upload the new image
+        File file = File(imageFile.path);
+        String fileName = file.path.split('/').last;
+
+        Reference storageRef = FirebaseStorage.instance.ref().child(
+          '$restaurantName/$fileName',
+        );
+
+        await storageRef.putFile(file);
+        imagePath = await storageRef.getDownloadURL();
+      }
+
+      // Update item data in Firestore
+      await _firestore
+          .collection('Restaurants')
+          .doc(restaurantName)
+          .collection("Food")
+          .doc(itemId)
+          .update({
+            'name': itemName,
+            'category': categoryName,
+            'description': description,
+            'price': price,
+            'availableAddon': availableAddons,
+            'imagePath': imagePath,
+          });
+
+      return "Success";
+    } catch (e) {
+      return "Update failed: $e";
+    }
+  }
+
+  // Method to fetch a specific food item by ID
+  Future<Map<String, dynamic>?> getItemById(
+    String itemId,
+    String restaurantName,
+  ) async {
+    try {
+      DocumentSnapshot document =
+          await _firestore
+              .collection('Restaurants')
+              .doc(restaurantName)
+              .collection("Food")
+              .doc(itemId)
+              .get();
+
+      if (document.exists) {
+        return document.data() as Map<String, dynamic>;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print("Error fetching item: $e");
+      return null;
+    }
+  }
+
+  // Add this method to your AuthService class
+  Future<String> deleteItem(String foodName, String restaurantName) async {
+    try {
+      // Find the document with matching name
+      QuerySnapshot querySnapshot =
+          await _firestore
+              .collection('Restaurants')
+              .doc(restaurantName)
+              .collection("Food")
+              .where('name', isEqualTo: foodName)
+              .limit(1)
+              .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        return "Item not found";
+      }
+
+      // Get the document ID
+      String docId = querySnapshot.docs.first.id;
+
+      // Check if there's an image to delete from storage
+      String imagePath = querySnapshot.docs.first['imagePath'] ?? '';
+
+      // Delete the document from Firestore
+      await _firestore
+          .collection('Restaurants')
+          .doc(restaurantName)
+          .collection("Food")
+          .doc(docId)
+          .delete();
+
+      // Delete the image from storage if it exists
+      if (imagePath.isNotEmpty) {
+        try {
+          Reference imageRef = FirebaseStorage.instance.refFromURL(imagePath);
+          await imageRef.delete();
+        } catch (e) {
+          print("Error deleting image: $e");
+          // Continue with deletion even if image deletion fails
+        }
+      }
+
+      return "Success";
+    } catch (e) {
+      print("Error deleting item: $e");
+      return "Deletion failed: $e";
+    }
+  }
 }

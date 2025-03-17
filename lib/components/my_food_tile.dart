@@ -29,7 +29,7 @@ class MyFoodTile extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '\$' + food.price.toString(),
+                        '\€${food.price}',
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                         ),

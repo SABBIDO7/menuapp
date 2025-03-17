@@ -4,6 +4,7 @@ import 'package:menuapp/components/my_drawer_tile.dart';
 import 'package:menuapp/pages/admin/createCategories_page.dart';
 import 'package:menuapp/pages/admin/createItem_page.dart';
 import 'package:menuapp/pages/admin/create_user.dart';
+import 'package:menuapp/pages/admin/foodList_page.dart';
 import 'package:menuapp/pages/admin/profile_page.dart';
 
 class AdminPage extends StatelessWidget {
@@ -55,7 +56,12 @@ class AdminPage extends StatelessWidget {
           MyDrawerTile(
             text: "Edit Item",
             icon: Icons.edit_document,
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FoodListPage()),
+              );
+            },
           ),
           Divider(color: Theme.of(context).colorScheme.secondary),
           MyDrawerTile(
