@@ -129,7 +129,7 @@ class CartPage extends StatelessWidget {
               ),
               MyButton(
                 onTap: () => sendOrderToWhatsApp(userCart, resturant),
-                text: "Make Order",
+                text: "Make Order (\$${resturant.getTotalPrice()})",
               ),
               SizedBox(height: 25),
             ],
